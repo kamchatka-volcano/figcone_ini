@@ -93,6 +93,49 @@ TEST(TestNodeListParser, Nested)
     }
 }
 
+TEST(TestNodeListParser, Nested2)
+{
+    auto result = parse(R"(
+    testStr = Hello
+    [testNodes.0]
+      testInt = 3
+    [testNodes.0.nested]
+      testStr = Foo
+    [testNodes.1]
+      testInt = 2
+    )");
+
+    auto& tree = result.asItem();
+    ASSERT_EQ(tree.paramsCount(), 1);
+    ASSERT_TRUE(tree.hasParam("testStr"));
+    ASSERT_TRUE(tree.param("testStr").isItem());
+    EXPECT_EQ(tree.param("testStr").value(), "Hello");
+    ASSERT_EQ(tree.nodesCount(), 1);
+    ASSERT_TRUE(tree.hasNode("testNodes"));
+    ASSERT_TRUE(tree.node("testNodes").isList());
+    auto& testNodes = tree.node("testNodes").asList();
+    ASSERT_EQ(testNodes.count(), 2);
+    {
+        auto& nodeData = testNodes.node(0).asItem();
+        ASSERT_EQ(nodeData.paramsCount(), 1);
+        ASSERT_TRUE(nodeData.hasParam("testInt"));
+        ASSERT_TRUE(nodeData.param("testInt").isItem());
+        EXPECT_EQ(nodeData.param("testInt").value(), "3");
+
+        ASSERT_TRUE(nodeData.hasNode("nested"));
+        ASSERT_TRUE(nodeData.node("nested").isItem());
+        EXPECT_EQ(nodeData.node("nested").asItem().param("testStr").value(), "Foo");
+    }
+    {
+        auto& nodeData = testNodes.node(1).asItem();
+        ASSERT_EQ(nodeData.paramsCount(), 1);
+        ASSERT_TRUE(nodeData.hasParam("testInt"));
+        ASSERT_TRUE(nodeData.param("testInt").isItem());
+        EXPECT_EQ(nodeData.param("testInt").value(), "2");
+    }
+}
+
+
 TEST(TestNodeListParser, NestedCfgList)
 {
     auto result = parse(R"(
