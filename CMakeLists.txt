@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(figcone_ini VERSION 0.9.0 DESCRIPTION "inifile-cpp parser adapter for figcone library")
+project(figcone_ini VERSION 0.10.0 DESCRIPTION "inifile-cpp parser adapter for figcone library")
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(FIGCONE_INI_SUBPROJECT OFF)
@@ -9,17 +9,12 @@ else()
 endif()
 
 include(external/ini)
+include(external/sfun)
 
-find_package(figcone_tree 0.9.0 QUIET)
+find_package(figcone_tree 0.10.0 QUIET)
 if (NOT figcone_tree_FOUND)
     message("Configuration info: figcone_tree library wasn't found on your system, downloading it from the GitHub repository")
     include (external/figcone_tree)
-endif()
-
-find_package(sfun 1.0.1 QUIET)
-if (NOT sfun_FOUND)
-    message("Configuration info: sfun library wasn't found on your system, downloading it from the GitHub repository")
-    include (external/sfun)
 endif()
 
 add_library(figcone_ini INTERFACE)
@@ -32,7 +27,22 @@ target_include_directories(
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
-target_link_libraries(figcone_ini INTERFACE figcone::figcone_tree inifile-cpp sfun::sfun)
+target_include_directories(
+    figcone_ini
+    INTERFACE
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/figcone_ini/detail/external>
+)
+target_include_directories(
+    figcone_ini
+    INTERFACE
+    $<BUILD_INTERFACE:${sfun_SOURCE_DIR}/include/>
+)
+target_include_directories(
+    figcone_ini
+    INTERFACE
+    $<BUILD_INTERFACE:${ini_SOURCE_DIR}/include/>
+)
+target_link_libraries(figcone_ini INTERFACE figcone::figcone_tree)
 
 option(ENABLE_TESTS "Enable tests" OFF)
 if (ENABLE_TESTS AND NOT FIGCONE_INI_SUBPROJECT)
@@ -43,7 +53,9 @@ endif()
 option(INSTALL_FIGCONE_INI "Install figcone_ini library unconditionally" OFF)
 if (NOT FIGCONE_INI_SUBPROJECT OR INSTALL_FIGCONE_INI)
     include(GNUInstallDirs)
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/figcone_ini DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/figcone_ini       DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(DIRECTORY ${sfun_SOURCE_DIR}/include/sfun                 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_ini/detail/external)
+    install(FILES     ${ini_SOURCE_DIR}/include/inicpp.h              DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_ini/detail/external)
 
     set(FIGCONE_INI_PACK_PATH ${CMAKE_INSTALL_LIBDIR}/cmake/figcone_ini)
     install(TARGETS figcone_ini
