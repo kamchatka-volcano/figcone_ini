@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 project(figcone_ini VERSION 0.10.0 DESCRIPTION "inifile-cpp parser adapter for figcone library")
+include(GNUInstallDirs)
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(FIGCONE_INI_SUBPROJECT OFF)
@@ -52,7 +53,6 @@ endif()
 
 option(INSTALL_FIGCONE_INI "Install figcone_ini library unconditionally" OFF)
 if (NOT FIGCONE_INI_SUBPROJECT OR INSTALL_FIGCONE_INI)
-    include(GNUInstallDirs)
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/figcone_ini       DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
     install(DIRECTORY ${sfun_SOURCE_DIR}/include/sfun                 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_ini/detail/external)
     install(FILES     ${ini_SOURCE_DIR}/include/inicpp.h              DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/figcone_ini/detail/external)
