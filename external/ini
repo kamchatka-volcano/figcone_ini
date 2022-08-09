@@ -13,18 +13,8 @@ if (NOT TARGET ini)
             CONFIGURE_COMMAND ""
             BUILD_COMMAND ""
             )
-    FetchContent_MakeAvailable(ini)
-
-    add_library(inifile-cpp INTERFACE)
-    target_include_directories(
-        inifile-cpp
-        INTERFACE
-        $<BUILD_INTERFACE:${ini_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    )
-
-    install(
-        TARGETS inifile-cpp
-        EXPORT ${PROJECT_NAME}-targets
-    )
+    FetchContent_GetProperties(ini)
+    if(NOT ini_POPULATED)
+        FetchContent_Populate(ini)
+    endif()
 endif()

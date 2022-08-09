@@ -130,18 +130,19 @@ private:
             auto newSectionName = std::string{};
             auto sectionParts = str::split(sectionName, ".");
             for (auto sectionPartIt = sectionParts.begin(); sectionPartIt != sectionParts.end(); ++sectionPartIt) {
-                newSectionName += *sectionPartIt;
+                auto sectionPart = std::string{*sectionPartIt};
+                newSectionName += sectionPart;
                 if (std::next(sectionPartIt) != sectionParts.end() &&
-                    detail::isUnsignedInt(*std::next(sectionPartIt))) {
+                    detail::isUnsignedInt(std::string{*std::next(sectionPartIt)})) {
                     addSectionTreeNode(newSectionName, [&](auto& parentNode){
                         sectionArrays_[newSectionName] = 0;
-                        return &parentNode.asItem().addNodeList(*sectionPartIt);
+                        return &parentNode.asItem().addNodeList(sectionPart);
                     });
                 }
-                else if (detail::isUnsignedInt(*sectionPartIt)) {
+                else if (detail::isUnsignedInt(sectionPart)) {
                     addSectionTreeNode(newSectionName, [&](auto& parentNode){
                         auto listSectionName = detail::beforeLast(newSectionName, ".");
-                        auto sectionArrayIndex = std::stoi(*sectionPartIt);
+                        auto sectionArrayIndex = std::stoi(sectionPart);
                         if (sectionArrayIndex != sectionArrays_[listSectionName]) {
                             if (sectionArrayIndex != ++sectionArrays_[listSectionName])
                                 throw figcone::ConfigError{"Section array index mismatch"};
@@ -151,7 +152,7 @@ private:
                 }
                 else {
                       addSectionTreeNode(newSectionName, [&](auto& parentNode){
-                          return &parentNode.asItem().addNode(*sectionPartIt);
+                          return &parentNode.asItem().addNode(sectionPart);
                       });
                 }
                 newSectionName += ".";
