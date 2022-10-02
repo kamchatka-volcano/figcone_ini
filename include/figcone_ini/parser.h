@@ -1,10 +1,10 @@
 #pragma once
 #include "detail/paramparser.h"
+#include "detail/external/sfun/string_utils.h"
+#include "detail/external/inicpp.h"
 #include <figcone_tree/tree.h>
 #include <figcone_tree/iparser.h>
 #include <figcone_tree/errors.h>
-#include <sfun/string_utils.h>
-#include <inicpp.h>
 #include <regex>
 #include <vector>
 #include <string>

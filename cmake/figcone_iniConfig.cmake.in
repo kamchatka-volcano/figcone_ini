@@ -1,4 +1,0 @@
-@PACKAGE_INIT@
-include(CMakeFindDependencyMacro)
-find_dependency(figcone_tree)
-include("${CMAKE_CURRENT_LIST_DIR}/figcone_iniTargets.cmake")
