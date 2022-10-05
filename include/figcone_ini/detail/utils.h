@@ -1,4 +1,6 @@
-#pragma once
+#ifndef FIGCONE_INI_UTILS_H
+#define FIGCONE_INI_UTILS_H
+
 #include "stream.h"
 #include <figcone_tree/errors.h>
 #include <string>
@@ -61,3 +63,5 @@ inline std::optional<std::string> readQuotedString(Stream& stream)
 
 
 }
+
+#endif //FIGCONE_INI_UTILS_H

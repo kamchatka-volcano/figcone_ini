@@ -1,4 +1,6 @@
-#pragma once
+#ifndef FIGCONE_INI_PARSER_H
+#define FIGCONE_INI_PARSER_H
+
 #include "detail/paramparser.h"
 #include "detail/external/sfun/string_utils.h"
 #include "detail/external/inicpp.h"
@@ -35,7 +37,7 @@ inline std::string getStreamContent(std::istream& stream)
     return {std::istream_iterator<char>{stream}, std::istream_iterator<char>{}};
 }
 
-inline void parseSection(const ::ini::IniSection& section, figcone::TreeNode& node)
+inline void parseSection(const ini::IniSection& section, figcone::TreeNode& node)
 {
     for (const auto& [key, value]: section) {
         auto paramList = readParamList(key, value.as<std::string>());
@@ -97,7 +99,7 @@ public:
 
         auto ini = [&] {
             try {
-                return ::ini::IniFile{input};
+                return ini::IniFile{input};
             }
             catch (const std::exception& e) {
                 throw detail::makeConfigError(e, fixedInputStream != nullptr);
@@ -111,7 +113,7 @@ public:
     }
 
 private:
-    void parseSections(const ::ini::IniFile& ini, figcone::TreeNode& node)
+    void parseSections(const ini::IniFile& ini, figcone::TreeNode& node)
     {
         for (const auto& [sectionName, section]: ini)
             if (sectionName == detail::fakeRootSectionId)
@@ -120,7 +122,7 @@ private:
                 detail::parseSection(section, *sections_.at(sectionName));
     }
 
-    void createSectionNodes(const ::ini::IniFile& ini, figcone::TreeNode& node)
+    void createSectionNodes(const ini::IniFile& ini, figcone::TreeNode& node)
     {
         namespace str = sfun::string_utils;
         for (const auto& [sectionName, section]: ini){
@@ -173,3 +175,5 @@ private:
 };
 
 }
+
+#endif //FIGCONE_INI_PARSER_H

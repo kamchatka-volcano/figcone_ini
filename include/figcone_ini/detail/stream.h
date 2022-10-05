@@ -1,4 +1,6 @@
-#pragma once
+#ifndef FIGCONE_INI_STREAM_H
+#define FIGCONE_INI_STREAM_H
+
 #include <figcone_tree/streamposition.h>
 #include <string>
 #include <istream>
@@ -92,3 +94,5 @@ private:
 };
 
 }
+
+#endif //FIGCONE_INI_STREAM_H

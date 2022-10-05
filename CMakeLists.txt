@@ -9,6 +9,9 @@ SealLake_Download(
         GIT_TAG master
         DESTINATION include/figcone_ini/detail/external
         FILES include/inicpp.h
+        TEXT_REPLACEMENTS
+            "namespace ini" "namespace figcone::ini"
+            "INICPP_" "FIGCONE_INICPP_"
 )
 
 SealLake_Download(
@@ -16,6 +19,9 @@ SealLake_Download(
         GIT_TAG        cmake_maintenance
         DESTINATION include/figcone_ini/detail/external
         DIRECTORIES include/sfun
+        TEXT_REPLACEMENTS
+            "namespace sfun" "namespace figcone::ini::sfun"
+            "SFUN_" "FIGCONE_INI_SFUN_"
 )
 
 set(INSTALL_FIGCONE_TREE ON)

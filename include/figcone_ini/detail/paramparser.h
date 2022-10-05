@@ -1,3 +1,6 @@
+#ifndef FIGCONE_INI_PARAMPARSER_H
+#define FIGCONE_INI_PARAMPARSER_H
+
 #include "utils.h"
 #include "stream.h"
 #include <figcone_tree/tree.h>
@@ -73,3 +76,5 @@ inline std::string readParam(const std::string& paramValue)
 }
 
 }
+
+#endif //FIGCONE_INI_PARAMPARSER_H
