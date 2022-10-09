@@ -1,15 +1,10 @@
-#ifndef FIGCONE_INI_UTILS_H
-#define FIGCONE_INI_UTILS_H
-
+#include "utils.h"
 #include "stream.h"
 #include <figcone_tree/errors.h>
-#include <string>
-#include <optional>
-#include <functional>
 
 namespace figcone::ini::detail{
 
-inline void skipWhitespace(Stream& stream, bool withNewLine = true)
+void skipWhitespace(Stream& stream, bool withNewLine)
 {
     while(!stream.atEnd()) {
         auto nextChar = stream.peek().front();
@@ -23,7 +18,7 @@ inline void skipWhitespace(Stream& stream, bool withNewLine = true)
     }
 }
 
-inline std::string readUntil(Stream& stream, std::function<bool(char)> stopPred)
+std::string readUntil(Stream& stream, std::function<bool(char)> stopPred)
 {
     auto result = std::string{};
     while (!stream.atEnd()) {
@@ -34,13 +29,13 @@ inline std::string readUntil(Stream& stream, std::function<bool(char)> stopPred)
     return result;
 }
 
-inline std::string readWord(Stream& stream, const std::string& stopChars = {})
+std::string readWord(Stream& stream, const std::string& stopChars)
 {
     return readUntil(stream,
                      [&stopChars](char ch) { return std::isspace(ch) || stopChars.find(ch) != std::string::npos; });
 }
 
-inline std::optional<std::string> readQuotedString(Stream& stream)
+std::optional<std::string> readQuotedString(Stream& stream)
 {
     if (stream.atEnd())
         return {};
@@ -61,7 +56,4 @@ inline std::optional<std::string> readQuotedString(Stream& stream)
     throw ConfigError{"String isn't closed", pos};
 }
 
-
 }
-
-#endif //FIGCONE_INI_UTILS_H

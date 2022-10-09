@@ -7,21 +7,18 @@ include(external/seal_lake)
 SealLake_Download(
         GIT_REPOSITORY https://github.com/Rookfighter/inifile-cpp.git
         GIT_TAG master
-        DESTINATION include/figcone_ini/detail/external
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/external
         FILES include/inicpp.h
         TEXT_REPLACEMENTS
             "namespace ini" "namespace figcone::ini"
-            "INICPP_" "FIGCONE_INICPP_"
 )
 
-SealLake_Download(
+SealLake_Import(
+        sfun 2.4.0
         GIT_REPOSITORY https://github.com/kamchatka-volcano/sfun.git
         GIT_TAG        cmake_maintenance
-        DESTINATION include/figcone_ini/detail/external
-        DIRECTORIES include/sfun
         TEXT_REPLACEMENTS
             "namespace sfun" "namespace figcone::ini::sfun"
-            "SFUN_" "FIGCONE_INI_SFUN_"
 )
 
 set(INSTALL_FIGCONE_TREE ON)
@@ -31,10 +28,17 @@ SealLake_Import(
         GIT_TAG        cmake_maintenance
 )
 
-SealLake_HeaderOnlyLibrary(
+SealLake_ObjectLibrary(
         NAMESPACE figcone
         COMPILE_FEATURES cxx_std_17
-        LIBRARIES figcone::figcone_tree
+        SOURCES
+            src/parser.cpp
+            src/paramparser.cpp
+            src/stream.cpp
+            src/utils.cpp
+        INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/external
+        INTERFACE_LIBRARIES figcone::figcone_tree
+        LIBRARIES sfun::sfun
         DEPENDENCIES
             figcone_tree 0.11.0
 )
