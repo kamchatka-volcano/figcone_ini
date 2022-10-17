@@ -4,17 +4,17 @@ project(figcone_ini VERSION 0.11.0 DESCRIPTION "inifile-cpp parser adapter for f
 include(GNUInstallDirs)
 include(external/seal_lake)
 
-SealLake_Download(
+SealLake_Bundle(
+        NAME figcone_inicpp
         GIT_REPOSITORY https://github.com/Rookfighter/inifile-cpp.git
         GIT_TAG master
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/external
-        FILES include/inicpp.h
+        SKIP_LOAD
         TEXT_REPLACEMENTS
             "namespace ini" "namespace figcone::ini"
 )
 
-SealLake_Import(
-        sfun 2.4.0
+SealLake_Bundle(
+        NAME figcone_ini_sfun
         GIT_REPOSITORY https://github.com/kamchatka-volcano/sfun.git
         GIT_TAG        cmake_maintenance
         TEXT_REPLACEMENTS
@@ -36,9 +36,12 @@ SealLake_ObjectLibrary(
             src/paramparser.cpp
             src/stream.cpp
             src/utils.cpp
-        INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/external
-        INTERFACE_LIBRARIES figcone::figcone_tree
-        LIBRARIES sfun::sfun
+        INCLUDES
+            ${SEAL_LAKE_SOURCE_figcone_inicpp}/include
+        INTERFACE_LIBRARIES
+            figcone::figcone_tree
+        LIBRARIES
+            figcone_ini_sfun::figcone_ini_sfun
         DEPENDENCIES
             figcone_tree 0.11.0
 )
