@@ -1,3 +1,5 @@
+[![build & test (clang, gcc, MSVC)](https://github.com/kamchatka-volcano/figcone_ini/actions/workflows/build_and_test.yml/badge.svg?branch=master)](https://github.com/kamchatka-volcano/figcone_ini/actions/workflows/build_and_test.yml)
+
 **figcone_ini** - is a [`inifile-cpp`](https://github.com/Rookfighter/inifile-cpp) configuration parser adapter for [`figcone`](https://github.com/kamchatka-volcano/figcone) library. 
 
 
