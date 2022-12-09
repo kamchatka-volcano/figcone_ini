@@ -9,6 +9,8 @@
 #include <string>
 #include <map>
 #include <sstream>
+#include <iterator>
+
 
 namespace figcone::ini{
 
