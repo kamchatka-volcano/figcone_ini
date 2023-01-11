@@ -1,20 +1,19 @@
-#include <figcone_ini/parser.h>
 #include "paramparser.h"
-#include <sfun/string_utils.h>
 #include <inicpp.h>
-#include <figcone_tree/tree.h>
+#include <figcone_ini/parser.h>
 #include <figcone_tree/errors.h>
-#include <regex>
-#include <vector>
-#include <string>
-#include <map>
-#include <sstream>
+#include <figcone_tree/tree.h>
+#include <sfun/string_utils.h>
 #include <iterator>
+#include <map>
+#include <regex>
+#include <sstream>
+#include <string>
+#include <vector>
 
+namespace figcone::ini {
 
-namespace figcone::ini{
-
-namespace{
+namespace {
 const auto fakeRootSectionId = std::string{"71cd27eb-7f27-4b61-a2ff-a64c89b275a7"};
 
 bool isUnsignedInt(const std::string& str)
@@ -39,7 +38,7 @@ std::string getStreamContent(std::istream& stream)
 
 void parseSection(const figcone::ini::IniSection& section, figcone::TreeNode& node)
 {
-    for (const auto& [key, value]: section) {
+    for (const auto& [key, value] : section) {
         auto paramList = detail::readParamList(key, value.as<std::string>());
         if (paramList)
             node.asItem().addParamList(key, *paramList);
@@ -61,7 +60,7 @@ figcone::ConfigError makeConfigError(const std::exception& e, bool hasFakeRootSe
     auto message = std::string{e.what()};
     auto regex = std::regex{R"(l\.(\d+): (.*))"};
     auto match = std::smatch{};
-    if (std::regex_search(message, match, regex)){
+    if (std::regex_search(message, match, regex)) {
         auto line = std::stoi(match[1]);
         if (hasFakeRootSection)
             line--;
@@ -73,9 +72,9 @@ figcone::ConfigError makeConfigError(const std::exception& e, bool hasFakeRootSe
     }
     return {e.what()};
 }
-}
+} //namespace
 
-class Parser::Impl{
+class Parser::Impl {
 public:
     void parseSections(const IniFile& ini, figcone::TreeNode& node);
     void createSectionNodes(const IniFile& ini, figcone::TreeNode& node);
@@ -91,13 +90,15 @@ private:
 
 Parser::Parser()
     : impl_{std::make_unique<Parser::Impl>()}
-{}
+{
+}
 Parser::~Parser() = default;
 
 TreeNode Parser::parse(std::istream& stream)
 {
     auto fixedInputStream = std::unique_ptr<std::istream>{};
-    auto& input = [&]()->decltype(auto){
+    auto& input = [&]() -> decltype(auto)
+    {
         if (hasRootSection(stream))
             return stream;
         auto inputStr = "[" + fakeRootSectionId + "]\n" + getStreamContent(stream);
@@ -105,7 +106,8 @@ TreeNode Parser::parse(std::istream& stream)
         return *fixedInputStream;
     }();
 
-    auto ini = [&] {
+    auto ini = [&]
+    {
         try {
             return IniFile{input};
         }
@@ -122,7 +124,7 @@ TreeNode Parser::parse(std::istream& stream)
 
 void Parser::Impl::parseSections(const IniFile& ini, figcone::TreeNode& node)
 {
-    for (const auto& [sectionName, section]: ini)
+    for (const auto& [sectionName, section] : ini)
         if (sectionName == fakeRootSectionId)
             parseSection(section, node);
         else if (!sectionArrays_.count(sectionName))
@@ -131,38 +133,46 @@ void Parser::Impl::parseSections(const IniFile& ini, figcone::TreeNode& node)
 
 void Parser::Impl::createSectionNodes(const IniFile& ini, figcone::TreeNode& node)
 {
-    namespace str = sfun::string_utils;
-    for (const auto& [sectionName, section]: ini){
+    for (const auto& [sectionName, section] : ini) {
         currentNode_ = &node;
         if (sectionName == fakeRootSectionId)
             continue;
         auto newSectionName = std::string{};
-        auto sectionParts = str::split(sectionName, ".");
+        auto sectionParts = sfun::split(sectionName, ".");
         for (auto sectionPartIt = sectionParts.begin(); sectionPartIt != sectionParts.end(); ++sectionPartIt) {
             auto sectionPart = std::string{*sectionPartIt};
             newSectionName += sectionPart;
             if (std::next(sectionPartIt) != sectionParts.end() &&
                 isUnsignedInt(std::string{*std::next(sectionPartIt)})) {
-                addSectionTreeNode(newSectionName, [&](auto& parentNode){
-                    sectionArrays_[newSectionName] = 0;
-                    return &parentNode.asItem().addNodeList(sectionPart);
-                });
+                addSectionTreeNode(
+                        newSectionName,
+                        [&](auto& parentNode)
+                        {
+                            sectionArrays_[newSectionName] = 0;
+                            return &parentNode.asItem().addNodeList(sectionPart);
+                        });
             }
             else if (isUnsignedInt(sectionPart)) {
-                addSectionTreeNode(newSectionName, [&](auto& parentNode){
-                    auto listSectionName = beforeLast(newSectionName, ".");
-                    auto sectionArrayIndex = std::stoi(sectionPart);
-                    if (sectionArrayIndex != sectionArrays_[listSectionName]) {
-                        if (sectionArrayIndex != ++sectionArrays_[listSectionName])
-                            throw figcone::ConfigError{"Section array index mismatch"};
-                    }
-                    return &parentNode.asList().addNode();
-                });
+                addSectionTreeNode(
+                        newSectionName,
+                        [&](auto& parentNode)
+                        {
+                            auto listSectionName = beforeLast(newSectionName, ".");
+                            auto sectionArrayIndex = std::stoi(sectionPart);
+                            if (sectionArrayIndex != sectionArrays_[listSectionName]) {
+                                if (sectionArrayIndex != ++sectionArrays_[listSectionName])
+                                    throw figcone::ConfigError{"Section array index mismatch"};
+                            }
+                            return &parentNode.asList().addNode();
+                        });
             }
             else {
-                  addSectionTreeNode(newSectionName, [&](auto& parentNode){
-                      return &parentNode.asItem().addNode(sectionPart);
-                  });
+                addSectionTreeNode(
+                        newSectionName,
+                        [&](auto& parentNode)
+                        {
+                            return &parentNode.asItem().addNode(sectionPart);
+                        });
             }
             newSectionName += ".";
         }
@@ -178,4 +188,4 @@ void Parser::Impl::addSectionTreeNode(
     currentNode_ = sections_[sectionName];
 }
 
-}
+} //namespace figcone::ini

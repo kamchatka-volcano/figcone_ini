@@ -2,12 +2,12 @@
 #define FIGCONE_INI_PARSER_H
 
 #include <figcone_tree/iparser.h>
-#include <string>
-#include <map>
 #include <functional>
+#include <map>
 #include <memory>
+#include <string>
 
-namespace figcone::ini{
+namespace figcone::ini {
 
 class Parser : public IParser {
     class Impl;
@@ -25,6 +25,6 @@ private:
     std::unique_ptr<Impl> impl_;
 };
 
-}
+} //namespace figcone::ini
 
 #endif //FIGCONE_INI_PARSER_H

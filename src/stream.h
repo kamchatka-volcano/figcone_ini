@@ -1,11 +1,11 @@
 #pragma once
 #include <figcone_tree/streamposition.h>
-#include <string>
 #include <istream>
+#include <string>
 
-namespace figcone::ini::detail{
+namespace figcone::ini::detail {
 
-class Stream{
+class Stream {
 public:
     explicit Stream(std::istream& stream, const StreamPosition& startPosition = StreamPosition{1, 1});
     Stream(Stream&&) = default;
@@ -26,4 +26,4 @@ private:
     StreamPosition startPosition_ = {0, 0};
 };
 
-}
+} //namespace figcone::ini::detail
