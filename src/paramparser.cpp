@@ -1,10 +1,10 @@
 #include "paramparser.h"
-#include "utils.h"
 #include "stream.h"
-#include <figcone_tree/tree.h>
+#include "utils.h"
 #include <figcone_tree/errors.h>
-#include <utility>
+#include <figcone_tree/tree.h>
 #include <sstream>
+#include <utility>
 
 namespace figcone::ini::detail {
 
@@ -29,9 +29,7 @@ std::optional<std::string> readParam(
     }
 }
 
-std::optional<std::vector<std::string>> readParamList(
-        const std::string& paramName,
-        const std::string& paramValue)
+std::optional<std::vector<std::string>> readParamList(const std::string& paramName, const std::string& paramValue)
 {
     auto inputStream = std::stringstream{paramValue};
     auto stream = Stream{inputStream};
@@ -54,7 +52,8 @@ std::optional<std::vector<std::string>> readParamList(
             skipWhitespace(stream, true);
             if (stream.peek() == endOfList || stream.atEnd())
                 throw ConfigError{"Parameter list '" + paramName + "' element is missing"};
-        } else if (stream.peek() == endOfList) {
+        }
+        else if (stream.peek() == endOfList) {
             stream.skip(1);
             return paramValueList;
         }
@@ -74,4 +73,4 @@ std::string readParam(const std::string& paramValue)
         return paramValue;
 }
 
-}
+} //namespace figcone::ini::detail

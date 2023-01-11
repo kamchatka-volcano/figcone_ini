@@ -2,11 +2,11 @@
 #include "stream.h"
 #include <figcone_tree/errors.h>
 
-namespace figcone::ini::detail{
+namespace figcone::ini::detail {
 
 void skipWhitespace(Stream& stream, bool withNewLine)
 {
-    while(!stream.atEnd()) {
+    while (!stream.atEnd()) {
         auto nextChar = stream.peek().front();
         if (!withNewLine && nextChar == '\n')
             return;
@@ -31,8 +31,12 @@ std::string readUntil(Stream& stream, std::function<bool(char)> stopPred)
 
 std::string readWord(Stream& stream, const std::string& stopChars)
 {
-    return readUntil(stream,
-                     [&stopChars](char ch) { return std::isspace(ch) || stopChars.find(ch) != std::string::npos; });
+    return readUntil(
+            stream,
+            [&stopChars](char ch)
+            {
+                return std::isspace(ch) || stopChars.find(ch) != std::string::npos;
+            });
 }
 
 std::optional<std::string> readQuotedString(Stream& stream)
@@ -56,4 +60,4 @@ std::optional<std::string> readQuotedString(Stream& stream)
     throw ConfigError{"String isn't closed", pos};
 }
 
-}
+} //namespace figcone::ini::detail
