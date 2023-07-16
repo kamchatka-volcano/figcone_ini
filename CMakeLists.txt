@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(figcone_ini VERSION 0.12.2 DESCRIPTION "inifile-cpp parser adapter for figcone library")
+project(figcone_ini VERSION 0.12.3 DESCRIPTION "inifile-cpp parser adapter for figcone library")
 include(GNUInstallDirs)
 include(external/seal_lake)
 
@@ -23,9 +23,9 @@ SealLake_Bundle(
 
 set(INSTALL_FIGCONE_TREE ON)
 SealLake_Import(
-        figcone_tree 1.0.0
+        figcone_tree 1.0.1
         GIT_REPOSITORY https://github.com/kamchatka-volcano/figcone_tree.git
-        GIT_TAG      v1.0.0
+        GIT_TAG      v1.0.1
 )
 
 SealLake_ObjectLibrary(
@@ -43,7 +43,7 @@ SealLake_ObjectLibrary(
         LIBRARIES
             figcone_ini_sfun::figcone_ini_sfun
         DEPENDENCIES
-            figcone_tree 1.0.0
+            figcone_tree 1.0.1
 )
 
 SealLake_OptionalBuildSteps(tests)
