@@ -23,7 +23,7 @@ TEST(TestNodeParser, SingleNodeSingleLevel)
       testInt = 10
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);
@@ -47,7 +47,7 @@ TEST(TestNodeParser, MultiNodeSingleLevel)
       testInt = 11
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);
@@ -80,7 +80,7 @@ TEST(TestNodeParser, MultiLevel)
           testInt = 9
     )");
 
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
     ASSERT_EQ(tree.paramsCount(), 2);
     ASSERT_EQ(tree.hasParam("foo"), 1);
     ASSERT_EQ(tree.hasParam("bar"), 1);

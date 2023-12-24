@@ -94,7 +94,7 @@ Parser::Parser()
 }
 Parser::~Parser() = default;
 
-TreeNode Parser::parse(std::istream& stream)
+Tree Parser::parse(std::istream& stream)
 {
     auto fixedInputStream = std::unique_ptr<std::istream>{};
     auto& input = [&]() -> decltype(auto)
@@ -117,8 +117,8 @@ TreeNode Parser::parse(std::istream& stream)
     }();
 
     auto tree = figcone::makeTreeRoot();
-    impl_->createSectionNodes(ini, tree);
-    impl_->parseSections(ini, tree);
+    impl_->createSectionNodes(ini, *tree);
+    impl_->parseSections(ini, *tree);
     return tree;
 }
 
@@ -163,7 +163,7 @@ void Parser::Impl::createSectionNodes(const IniFile& ini, figcone::TreeNode& nod
                                 if (sectionArrayIndex != ++sectionArrays_[listSectionName])
                                     throw figcone::ConfigError{"Section array index mismatch"};
                             }
-                            return &parentNode.asList().addNode();
+                            return &parentNode.asList().emplaceBack();
                         });
             }
             else {

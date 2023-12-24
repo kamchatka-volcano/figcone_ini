@@ -15,7 +15,7 @@ auto parseParam(const std::string& str)
 TEST(TestParam, Basic)
 {
     auto result = parseParam(R"( test = 1)");
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
 
     ASSERT_EQ(tree.paramsCount(), 1);
     EXPECT_EQ(tree.param("test").value(), "1");
@@ -24,7 +24,7 @@ TEST(TestParam, Basic)
 TEST(TestParam, BasicString)
 {
     auto result = parseParam(R"( test = "Hello world")");
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
 
     ASSERT_EQ(tree.paramsCount(), 1);
     EXPECT_EQ(tree.param("test").value(), "Hello world");
@@ -33,7 +33,7 @@ TEST(TestParam, BasicString)
 TEST(TestParam, EmptyStringParam)
 {
     auto result = parseParam(R"( test = "")");
-    auto& tree = result.asItem();
+    auto& tree = result.root().asItem();
 
     ASSERT_EQ(tree.paramsCount(), 1);
     EXPECT_EQ(tree.param("test").value(), "");

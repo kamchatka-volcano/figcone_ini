@@ -14,7 +14,7 @@ class Parser : public IParser {
 
 public:
     Parser();
-    TreeNode parse(std::istream& stream) override;
+    Tree parse(std::istream& stream) override;
     ~Parser() override;
     Parser(const Parser&) = delete;
     Parser(Parser&&) = delete;
