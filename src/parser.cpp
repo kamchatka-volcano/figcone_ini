@@ -23,7 +23,7 @@ bool isUnsignedInt(const std::string& str)
 
 bool hasRootSection(std::istream& stream)
 {
-    auto pos = stream.tellg();
+    const auto pos = stream.tellg();
     auto firstWord = std::string{};
     stream >> firstWord;
     stream.seekg(pos);
@@ -39,8 +39,7 @@ std::string getStreamContent(std::istream& stream)
 void parseSection(const figcone::ini::IniSection& section, figcone::TreeNode& node)
 {
     for (const auto& [key, value] : section) {
-        auto paramList = detail::readParamList(key, value.as<std::string>());
-        if (paramList)
+        if (const auto paramList = detail::readParamList(key, value.as<std::string>()))
             node.asItem().addParamList(key, *paramList);
         else
             node.asItem().addParam(key, detail::readParam(value.as<std::string>()));
@@ -49,7 +48,7 @@ void parseSection(const figcone::ini::IniSection& section, figcone::TreeNode& no
 
 std::string beforeLast(const std::string& str, const std::string& delim)
 {
-    auto pos = str.rfind(delim);
+    const auto pos = str.rfind(delim);
     if (pos == std::string::npos)
         return str;
     return str.substr(0, pos);
@@ -57,8 +56,8 @@ std::string beforeLast(const std::string& str, const std::string& delim)
 
 figcone::ConfigError makeConfigError(const std::exception& e, bool hasFakeRootSection)
 {
-    auto message = std::string{e.what()};
-    auto regex = std::regex{R"(l\.(\d+): (.*))"};
+    const auto message = std::string{e.what()};
+    static const auto regex = std::regex{R"(l\.(\d+): (.*))"};
     auto match = std::smatch{};
     if (std::regex_search(message, match, regex)) {
         auto line = std::stoi(match[1]);
@@ -106,7 +105,7 @@ Tree Parser::parse(std::istream& stream)
         return *fixedInputStream;
     }();
 
-    auto ini = [&]
+    const auto ini = [&]
     {
         try {
             return IniFile{input};
@@ -116,10 +115,10 @@ Tree Parser::parse(std::istream& stream)
         }
     }();
 
-    auto tree = figcone::makeTreeRoot();
-    impl_->createSectionNodes(ini, *tree);
-    impl_->parseSections(ini, *tree);
-    return tree;
+    auto treeRoot = figcone::makeTreeRoot();
+    impl_->createSectionNodes(ini, *treeRoot);
+    impl_->parseSections(ini, *treeRoot);
+    return Tree{std::move(treeRoot)};
 }
 
 void Parser::Impl::parseSections(const IniFile& ini, figcone::TreeNode& node)
@@ -157,8 +156,8 @@ void Parser::Impl::createSectionNodes(const IniFile& ini, figcone::TreeNode& nod
                         newSectionName,
                         [&](auto& parentNode)
                         {
-                            auto listSectionName = beforeLast(newSectionName, ".");
-                            auto sectionArrayIndex = std::stoi(sectionPart);
+                            const auto listSectionName = beforeLast(newSectionName, ".");
+                            const auto sectionArrayIndex = std::stoi(sectionPart);
                             if (sectionArrayIndex != sectionArrays_[listSectionName]) {
                                 if (sectionArrayIndex != ++sectionArrays_[listSectionName])
                                     throw figcone::ConfigError{"Section array index mismatch"};
