@@ -3,7 +3,7 @@
 #include <figcone_ini/parser.h>
 #include <figcone_tree/errors.h>
 #include <figcone_tree/tree.h>
-#include <sfun/string_utils.h>
+#include <eel/string_utils.h>
 #include <iterator>
 #include <map>
 #include <regex>
@@ -137,7 +137,7 @@ void Parser::Impl::createSectionNodes(const IniFile& ini, figcone::TreeNode& nod
         if (sectionName == fakeRootSectionId)
             continue;
         auto newSectionName = std::string{};
-        auto sectionParts = sfun::split(sectionName, ".");
+        auto sectionParts = eel::split(sectionName, ".");
         for (auto sectionPartIt = sectionParts.begin(); sectionPartIt != sectionParts.end(); ++sectionPartIt) {
             auto sectionPart = std::string{*sectionPartIt};
             newSectionName += sectionPart;
